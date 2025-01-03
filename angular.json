@@ -39,6 +39,9 @@
             "prerender": true,
             "ssr": {
               "entry": "server.ts"
+            },
+            "stylePreprocessorOptions": {
+              "includePaths": ["node_modules"]
             }
           },
           "configurations": {
@@ -103,5 +106,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "0e0e0581-e9ef-4810-8ed7-271e70ca9b0c"
   }
 }

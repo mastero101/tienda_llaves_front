@@ -1,0 +1,118 @@
+<section class="relative py-20 text-center text-white">
+  <!-- Hero Section con fondo oscuro semitransparente -->
+  <div class="absolute inset-0 bg-gradient-to-b from-black/70 to-black/70 -z-10"></div>
+  <div class="absolute inset-0 bg-[url('/assets/products/hero-bg.jpg')] bg-cover bg-center -z-20"></div>
+  
+  <div class="container mx-auto px-4">
+    <h1 class="text-5xl font-bold mb-6">Licencias Windows Originales</h1>
+    <p class="text-xl mb-8">Obtén tu licencia original de Windows al mejor precio del mercado</p>
+    <button routerLink="/productos" 
+            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg 
+                   transition duration-300 transform hover:scale-105">
+      Ver Productos
+    </button>
+  </div>
+</section>
+
+<section class="py-16 bg-gray-50">
+  <div class="container mx-auto px-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Característica 1 -->
+      <div class="text-center">
+        <div class="text-blue-600 mb-4">
+          <i class="fas fa-shield-alt text-4xl"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">100% Original</h3>
+        <p class="text-gray-600">Licencias originales directamente de Microsoft</p>
+      </div>
+      
+      <!-- Característica 2 -->
+      <div class="text-center">
+        <div class="text-blue-600 mb-4">
+          <i class="fas fa-bolt text-4xl"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">Activación Inmediata</h3>
+        <p class="text-gray-600">Recibe tu código de activación al instante</p>
+      </div>
+      
+      <!-- Característica 3 -->
+      <div class="text-center">
+        <div class="text-blue-600 mb-4">
+          <i class="fas fa-headset text-4xl"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">Soporte 24/7</h3>
+        <p class="text-gray-600">Asistencia técnica disponible en todo momento</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-16">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl font-bold text-center mb-12">Productos Destacados</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div *ngFor="let product of featuredProducts" 
+           class="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:-translate-y-2">
+        <div class="relative aspect-[4/3] w-full overflow-hidden bg-white">
+          <img [src]="product.imageUrl" 
+               [alt]="product.name" 
+               class="w-full h-full object-contain p-6 hover:scale-105 transition-transform duration-300"
+               (error)="handleImageError($event)"
+               loading="lazy">
+        </div>
+        <div class="p-6">
+          <h5 class="text-xl font-bold mb-2">{{ product.name }}</h5>
+          <p class="text-gray-600 mb-4">{{ product.description }}</p>
+          <p class="text-2xl text-blue-600 font-bold mb-4">{{ product.price | currency }}</p>
+          <button (click)="goToProduct(product.id)"
+                  class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded
+                         transition duration-300">
+            Ver Detalles
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-16 bg-gray-50">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl font-bold text-center mb-8">Todos Nuestros Productos</h2>
+    
+    <swiper-container 
+      slides-per-view="auto"
+      space-between="20"
+      navigation="true"
+      pagination="true"
+      class="w-full">
+      
+      <swiper-slide *ngFor="let product of products" 
+                    class="max-w-sm">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div class="relative aspect-[4/3] w-full overflow-hidden bg-white">
+            <img [src]="product.imageUrl" 
+                 [alt]="product.name"
+                 (error)="handleImageError($event)"
+                 class="w-full h-full object-contain p-6 hover:scale-105 transition-transform duration-300"
+                 loading="lazy">
+          </div>
+          <div class="p-4">
+            <h3 class="text-xl font-bold mb-2">{{ product.name }}</h3>
+            <p class="text-gray-600 mb-4">{{ product.description }}</p>
+            <div class="flex justify-between items-center">
+              <span class="text-2xl font-bold text-blue-600">
+                {{ product.price | currency }}
+              </span>
+              <button (click)="goToProduct(product.id)"
+                      class="bg-blue-600 hover:bg-blue-700 text-white font-bold 
+                             py-2 px-4 rounded transition duration-300">
+                Ver Detalles
+              </button>
+            </div>
+          </div>
+        </div>
+      </swiper-slide>
+      
+    </swiper-container>
+  </div>
+</section>
