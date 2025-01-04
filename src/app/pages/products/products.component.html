@@ -1,1 +1,102 @@
-<p>products works!</p>
+<div class="container mx-auto px-4 py-8">
+  <!-- Barra de búsqueda y filtros -->
+  <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+    <div class="flex flex-col md:flex-row gap-4">
+      <!-- Buscador -->
+      <div class="flex-grow">
+        <div class="relative">
+          <input type="text"
+                 [(ngModel)]="searchTerm"
+                 (ngModelChange)="filterProducts()"
+                 placeholder="Buscar productos..."
+                 class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+        </div>
+      </div>
+
+      <!-- Filtro por tipo -->
+      <div class="min-w-[200px]">
+        <select [(ngModel)]="selectedType"
+                (ngModelChange)="filterProducts()"
+                class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <option value="all">Todos los productos</option>
+          <option value="home">Windows Home</option>
+          <option value="pro">Windows Pro</option>
+          <option value="proplus">Office Pro Plus</option>
+          <option value="home&bussiness">Home & Business</option>
+          <option value="office365">Microsoft 365</option>
+          <option value="antivirus">Antivirus</option>
+          <option value="autodesk">Autodesk</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid de productos -->
+  <div id="products-grid" 
+       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div *ngFor="let product of paginatedProducts" 
+         class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+      <!-- Imagen del producto -->
+      <div class="relative aspect-[4/3] overflow-hidden bg-white">
+        <img [src]="product.imageUrl" 
+             [alt]="product.name"
+             [routerLink]="['/productos', product.id]"
+             class="w-full h-full object-contain p-6 cursor-pointer hover:scale-105 transition-transform">
+      </div>
+
+      <!-- Detalles del producto -->
+      <div class="p-6">
+        <h3 class="text-lg font-semibold mb-2 hover:text-blue-600 cursor-pointer"
+            [routerLink]="['/productos', product.id]">
+          {{ product.name }}
+        </h3>
+        <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ product.description }}</p>
+        <div class="flex items-center justify-between">
+          <span class="text-2xl font-bold text-blue-600">{{ product.price | currency }}</span>
+          <button (click)="addToCart(product)"
+                  class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 
+                         transition-colors flex items-center gap-2">
+            <i class="fa-solid fa-cart-plus"></i>
+            <span class="hidden sm:inline">Agregar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mensaje cuando no hay resultados -->
+  <div *ngIf="filteredProducts.length === 0" 
+       class="text-center py-12">
+    <i class="fa-solid fa-search text-4xl text-gray-400 mb-4"></i>
+    <p class="text-gray-600">No se encontraron productos que coincidan con tu búsqueda</p>
+  </div>
+
+  <!-- Paginación -->
+  <div *ngIf="totalPages > 1" class="flex justify-center items-center gap-2 mt-8">
+    <!-- Botón anterior -->
+    <button (click)="changePage(currentPage - 1)"
+            [disabled]="currentPage === 1"
+            class="px-3 py-1 rounded-lg border hover:bg-gray-100 transition-colors
+                   disabled:opacity-50 disabled:cursor-not-allowed">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    
+    <!-- Números de página -->
+    <button *ngFor="let page of getPageNumbers()"
+            (click)="changePage(page)"
+            [class.bg-blue-600]="currentPage === page"
+            [class.text-white]="currentPage === page"
+            class="px-3 py-1 rounded-lg border hover:bg-blue-600 hover:text-white transition-colors">
+      {{ page }}
+    </button>
+    
+    <!-- Botón siguiente -->
+    <button (click)="changePage(currentPage + 1)"
+            [disabled]="currentPage === totalPages"
+            class="px-3 py-1 rounded-lg border hover:bg-gray-100 transition-colors
+                   disabled:opacity-50 disabled:cursor-not-allowed">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+  </div>
+</div>

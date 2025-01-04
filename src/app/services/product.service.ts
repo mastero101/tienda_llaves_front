@@ -62,6 +62,38 @@ export class ProductService {
       type: 'home&bussiness',
       imageUrl: 'https://softwaredepot.co/cdn/shop/files/microsoft-microsoft-office-2021-home-business-mac-33718832758973_1280x.png?v=1700460079',
     },
+    {
+      id: 8,
+      name: 'Kaspersky 2024 Standar Antivirus',
+      description: 'Protección completa contra virus, malware y ransomware. Licencia por 1 año para 1 dispositivo.',
+      price: 299.99,
+      type: 'antivirus',
+      imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRI6HHRWxeva1h-ChbYpMuvAusbIBIdjqPwgA&s',
+    },
+    {
+      id: 9,
+      name: 'Avast 2024 Pro Antivirus',
+      description: 'Antivirus premium con protección en tiempo real y firewall avanzado. Licencia anual para 1 PC.',
+      price: 249.99,
+      type: 'antivirus',
+      imageUrl: 'https://blitzhandel24.imgbolt.de/media/image/d8/2d/b5/Avast-Antivirus-Pro-2022.jpg',
+    },
+    {
+      id: 10,
+      name: 'Autodesk Student Account 1 Año',
+      description: 'Acceso a todas las herramientas de Autodesk, incluyendo AutoCAD, 3ds Max, Maya y más. Suscripción anual.',
+      price: 399.99,
+      type: 'autodesk',
+      imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMkCwkDHgIAV9y-aMpgquN-rsRh71SJDFUGQ&s',
+    },
+    {
+      id: 11,
+      name: 'Microsoft 365 Personal 1 Año',
+      description: 'Suscripción anual a Microsoft 365 con acceso a Word, Excel, PowerPoint, OneDrive y más.',
+      price: 59.99,
+      type: 'office365',
+      imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR04SqaCOS8J2h6T7bSTkN4UVgqtoBiqvZvjg&s',
+    }
   ];
 
   getProducts() {

@@ -19,10 +19,17 @@
         <div class="flex items-center gap-4 flex-grow">
           <img [src]="item.product.imageUrl" 
                [alt]="item.product.name"
-               class="w-20 h-20 sm:w-24 sm:h-24 object-contain">
+               [routerLink]="['/productos', item.product.id]"
+               class="w-20 h-20 sm:w-24 sm:h-24 object-contain cursor-pointer 
+                      hover:opacity-80 transition-opacity"
+               >
           
           <div class="flex-grow min-w-0">
-            <h3 class="text-lg font-semibold truncate">{{ item.product.name }}</h3>
+            <h3 class="text-lg font-semibold truncate 
+                       hover:text-blue-600 cursor-pointer transition-colors"
+                [routerLink]="['/productos', item.product.id]">
+              {{ item.product.name }}
+            </h3>
             <p class="text-gray-600 text-sm line-clamp-2">{{ item.product.description }}</p>
             <p class="text-blue-600 font-bold mt-1">{{ item.product.price | currency }}</p>
           </div>
@@ -73,7 +80,7 @@
           Limpiar Carrito
         </button>
         <button routerLink="/checkout"
-                class="w-full sm:flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg 
+                class="w-full sm:flex-1 px-4 py-3 bg-green-600 text-white rounded-lg 
                        hover:bg-blue-700 transition-colors text-sm sm:text-base">
           <i class="fa-solid fa-credit-card mr-2"></i>
           Proceder al Pago
