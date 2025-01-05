@@ -1,6 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import 'swiper/css';@import 'swiper/css/navigation';
+@import 'swiper/css/pagination';
 
-@import 'swiper/css';
+// Estilos personalizados para el carrusel
+swiper-container {
+  padding: 2rem 0;
+}
+
+swiper-slide {
+  width: auto;
+  height: auto;
+  display: flex;
+  justify-content: center;
+}
