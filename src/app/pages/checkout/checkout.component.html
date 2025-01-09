@@ -1,4 +1,4 @@
-<div class="container mx-auto px-4 py-8">
+<div class="container mx-auto px-4 py-8"></div>
   <h1 class="text-3xl font-bold mb-8">Checkout</h1>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -44,78 +44,10 @@
             </div>
           </div>
 
-          <!-- Teléfono -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Teléfono
-            </label>
-            <input type="tel" 
-                   [(ngModel)]="customerInfo.phone" 
-                   name="phone"
-                   required
-                   class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-          </div>
-
-          <!-- Dirección -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Dirección
-            </label>
-            <input type="text" 
-                   [(ngModel)]="customerInfo.address" 
-                   name="address"
-                   required
-                   class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-          </div>
-
-          <!-- Ciudad, País y Código Postal -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Ciudad
-              </label>
-              <input type="text" 
-                     [(ngModel)]="customerInfo.city" 
-                     name="city"
-                     required
-                     class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                País
-              </label>
-              <input type="text" 
-                     [(ngModel)]="customerInfo.country" 
-                     name="country"
-                     required
-                     class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Código Postal
-              </label>
-              <input type="text" 
-                     [(ngModel)]="customerInfo.zipCode" 
-                     name="zipCode"
-                     required
-                     class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-            </div>
-          </div>
-
-          <!-- Método de Pago -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Método de Pago
-            </label>
-            <select [(ngModel)]="customerInfo.paymentMethod" 
-                    name="paymentMethod"
-                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-              <option value="card">Tarjeta de Crédito</option>
-              <option value="transfer">Transferencia Bancaria</option>
-              <option value="paypal">PayPal</option>
-              <option value="paypal">Mercadopago</option>
-            </select>
-          </div>
+          <!-- Resto de los campos del formulario... -->
+          
+          <!-- Contenedor para el brick de MercadoPago -->
+          <div id="cardPayment_container" class="mt-6"></div>
         </form>
       </div>
     </div>
@@ -148,12 +80,10 @@
         </div>
 
         <!-- Botón de pago -->
-        <button (click)="onSubmit()"
-                class="w-full mt-6 bg-blue-600 text-white py-3 px-4 rounded-lg
-                       hover:bg-blue-700 transition-colors">
-          Proceder al Pago
+        <button (click)="pay()" 
+                class="w-full mt-6 bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors">
+          Proceder al Pago con Mercado Pago
         </button>
       </div>
     </div>
   </div>
-</div>
