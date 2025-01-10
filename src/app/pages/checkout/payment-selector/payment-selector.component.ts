@@ -27,9 +27,9 @@ export class PaymentSelectorComponent implements AfterViewInit {
   showConfirmation: boolean = false;
 
   bankInfo = {
-    name: 'Banco Example',
-    accountHolder: 'Company Name',
-    clabe: '012345678901234567'
+    name: 'Nu Bank',
+    accountHolder: 'Alejandro Castro',
+    clabe: '01234567890129096'
   };
 
   constructor(private mercadoPagoService: MercadoPagoService) { }
