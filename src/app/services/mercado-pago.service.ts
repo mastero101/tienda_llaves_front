@@ -1,6 +1,7 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { environment } from '../../environments/environment';
+import { delay } from 'rxjs';
 
 declare var MercadoPago: any;
 
@@ -34,6 +35,16 @@ export class MercadoPagoService {
             onSubmit: async (cardFormData: any) => {
               try {
                 console.log('Datos del formulario:', cardFormData);
+        
+                setTimeout(() => {
+                  alert(`Pago Exitoso
+                          \nToken: ${cardFormData.token}
+                          \nCliente: ${cardFormData.payer.email}
+                          \nMetodo Pago: ${cardFormData.payment_method_id}
+                          \nCantidad: ${cardFormData.transaction_amount}
+                        `);
+                }, 3000);
+
               } catch (error) {
                 console.error('Error en el pago:', error);
               }
