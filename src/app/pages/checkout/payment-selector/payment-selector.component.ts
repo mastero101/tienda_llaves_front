@@ -25,24 +25,25 @@ export class PaymentSelectorComponent implements AfterViewInit {
 
   selectedMethod: string = '';
   showConfirmation: boolean = false;
+  showCopied: boolean = false;
+  showPaymentConfirmation: boolean = false;
+  paymentResponse: any = null;
 
   bankInfo = {
     name: 'Nu Bank',
     accountHolder: 'Alejandro Castro',
-    clabe: '01234567890129096'
+    clabe: '638180000129689296'
   };
 
   constructor(private mercadoPagoService: MercadoPagoService) { }
 
   ngAfterViewInit() {
-    // El contenedor ya existe en el DOM aunque esté oculto
     console.log('Vista inicializada');
   }
 
-  onMethodChange() {
-    console.log('Método cambiado a:', this.selectedMethod);
-    if (this.selectedMethod === 'card') {
-      // Usar setTimeout para asegurar que el cambio de visibilidad se complete
+  onMethodChange(method: string) {
+    this.selectedMethod = method;
+    if (method === 'card') {
       setTimeout(() => {
         this.initializeMercadoPago();
       }, 100);
@@ -55,6 +56,18 @@ export class PaymentSelectorComponent implements AfterViewInit {
       await this.mercadoPagoService.initCardPayment(this.amount);
     } catch (error) {
       console.error('Error al inicializar MercadoPago:', error);
+    }
+  }
+
+  async copyToClipboard(text: string) {
+    try {
+      await navigator.clipboard.writeText(text);
+      this.showCopied = true;
+      setTimeout(() => {
+        this.showCopied = false;
+      }, 2000);
+    } catch (err) {
+      console.error('Error al copiar al portapapeles:', err);
     }
   }
 

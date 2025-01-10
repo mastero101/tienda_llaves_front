@@ -93,6 +93,14 @@ export class ProductService {
       price: 59.99,
       type: 'office365',
       imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR04SqaCOS8J2h6T7bSTkN4UVgqtoBiqvZvjg&s',
+    },
+    {
+      id: 12,
+      name: 'Software Economico',
+      description: 'Suscripción anual a Microsoft 365 con acceso a Word, Excel, PowerPoint, OneDrive y más.',
+      price: 5,
+      type: 'home',
+      imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbVHjJwSbiZHk0iRtyBtUi3Tiux8D4RDqqGw&s',
     }
   ];
 
