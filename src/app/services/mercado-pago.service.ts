@@ -15,6 +15,52 @@ export class MercadoPagoService {
     this.initializeMercadoPago();
   }
 
+  async initCardPayment(amount: number): Promise<void> {
+    try {
+      await this.waitForSDK();
+      
+      const bricksBuilder = this.mp.bricks();
+      
+      // Usar el ID correcto del contenedor
+      const renderComponent = async () => {
+        await bricksBuilder.create("cardPayment", "cardPaymentBrick_container", {
+          initialization: {
+            amount: amount
+          },
+          callbacks: {
+            onReady: () => {
+              console.log('Brick listo');
+            },
+            onSubmit: async (cardFormData: any) => {
+              try {
+                console.log('Datos del formulario:', cardFormData);
+              } catch (error) {
+                console.error('Error en el pago:', error);
+              }
+            },
+            onError: (error: any) => {
+              console.error('Error en brick:', error);
+            }
+          },
+          style: {
+            theme: 'default'
+          }
+        });
+      };
+
+      await renderComponent();
+    } catch (error) {
+      console.error('Error al inicializar el pago:', error);
+      throw error;
+    }
+  }
+
+  private async waitForSDK(): Promise<void> {
+    if (!this.isSDKLoaded) {
+      await this.initializeMercadoPago();
+    }
+  }
+
   private initializeMercadoPago(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (isPlatformBrowser(this.platformId)) {
@@ -40,57 +86,5 @@ export class MercadoPagoService {
         reject('No estamos en un navegador');
       }
     });
-  }
-
-  async initCardPayment(amount: number): Promise<void> {
-    try {
-      await this.waitForSDK();
-      
-      const bricksBuilder = this.mp.bricks();
-      
-      const renderComponent = async (brickType: string) => {
-        await bricksBuilder.create(brickType, brickType + "_container", {
-          initialization: {
-            amount: amount
-          },
-          callbacks: {
-            onReady: () => {
-              console.log(`${brickType} brick listo`);
-            },
-            onSubmit: async (cardFormData: any) => {
-              try {
-                // Aquí recibirías los datos de la tarjeta tokenizados
-                console.log('Datos del formulario:', cardFormData);
-                // Normalmente aquí enviarías estos datos a tu backend
-              } catch (error) {
-                console.error('Error en el pago:', error);
-              }
-            },
-            onError: (error: any) => {
-              console.error(`Error en ${brickType} brick:`, error);
-            }
-          },
-          customization: {
-            visual: {
-              style: {
-                theme: 'default'
-              }
-            }
-          }
-        });
-      };
-
-      // Renderizar los componentes necesarios
-      await renderComponent('cardPayment');
-    } catch (error) {
-      console.error('Error al inicializar el pago:', error);
-      throw error;
-    }
-  }
-
-  private async waitForSDK(): Promise<void> {
-    if (!this.isSDKLoaded) {
-      await this.initializeMercadoPago();
-    }
   }
 }

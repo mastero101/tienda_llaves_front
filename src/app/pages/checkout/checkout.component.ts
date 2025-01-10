@@ -6,11 +6,12 @@ import { CartService } from '../../services/cart.service';
 import { MercadoPagoService } from '../../services/mercado-pago.service';
 import { CartItem } from '../../interfaces/cart-item.interface';
 import { Subscription } from 'rxjs';
+import { PaymentSelectorComponent } from './payment-selector/payment-selector.component';
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PaymentSelectorComponent], // Agregar a imports
   templateUrl: './checkout.component.html'
 })
 export class CheckoutComponent implements OnInit, OnDestroy {
@@ -27,7 +28,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     city: '',
     country: 'AR',
     zipCode: '',
-    paymentMethod: 'mercadopago'
+    paymentMethod: '' // Ya no inicializamos con 'mercadopago'
   };
 
   constructor(
@@ -43,10 +44,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
       if (this.cartItems.length === 0) {
         this.router.navigate(['/productos']);
-        return;
       }
-
-      this.initializePayment();
     });
   }
 
@@ -56,25 +54,18 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  async initializePayment() {
-    try {
-      await this.mercadoPagoService.initCardPayment(this.total);
-    } catch (error) {
-      console.error('Error al inicializar el pago:', error);
-    }
-  }
-
-  async pay() {
+  // Nuevo método para manejar el evento del selector de pagos
+  handlePaymentSubmit(event: {method: string, data: any}) {
+    this.customerInfo.paymentMethod = event.method;
+    
     if (this.validateForm()) {
       try {
-        // Inicializar el pago con MercadoPago
-        const items = this.cartItems.map(item => ({
-          title: item.product.name,
-          unit_price: item.product.price,
-          quantity: item.quantity
-        }));
-
-        await this.mercadoPagoService.initCardPayment(this.total);
+        if (event.method === 'transfer') {
+          // Procesar la transferencia
+          console.log('Procesando transferencia bancaria');
+        }
+        // No necesitamos manejar el caso de 'card' aquí porque
+        // MercadoPago se encarga de eso en su propio formulario
       } catch (error) {
         console.error('Error al procesar el pago:', error);
       }

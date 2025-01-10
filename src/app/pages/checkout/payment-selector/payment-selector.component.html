@@ -1,0 +1,65 @@
+<div class="container mx-auto">
+  <div class="bg-white rounded-lg p-6">
+    <h2 class="text-xl font-semibold mb-6">Método de Pago</h2>
+
+    <!-- Selector de método de pago -->
+    <div class="space-y-4 mb-6">
+      <div class="flex items-center space-x-3">
+        <input type="radio" 
+               id="transfer" 
+               name="paymentMethod" 
+               value="transfer"
+               [(ngModel)]="selectedMethod"
+               (change)="onMethodChange()"
+               class="form-radio h-4 w-4 text-blue-600">
+        <label for="transfer" class="flex items-center gap-2">
+          <i class="fas fa-building"></i>
+          Transferencia Bancaria
+        </label>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <input type="radio" 
+               id="card" 
+               name="paymentMethod" 
+               value="card"
+               [(ngModel)]="selectedMethod"
+               (change)="onMethodChange()"
+               class="form-radio h-4 w-4 text-blue-600">
+        <label for="card" class="flex items-center gap-2">
+          <i class="fas fa-credit-card"></i>
+          Tarjeta de Crédito/Débito
+        </label>
+      </div>
+    </div>
+
+    <!-- Formularios según método seleccionado -->
+    @if (selectedMethod === 'transfer') {
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h3 class="font-medium mb-2">Datos para Transferencia</h3>
+        <div class="space-y-2">
+          <p><span class="font-medium">Banco:</span> {{bankInfo.name}}</p>
+          <p><span class="font-medium">Beneficiario:</span> {{bankInfo.accountHolder}}</p>
+          <p><span class="font-medium">CLABE:</span> {{bankInfo.clabe}}</p>
+          <p><span class="font-medium">Cantidad:</span> ${{amount}}</p>
+        </div>
+        <button (click)="onSubmit()" 
+                class="w-full mt-6 bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+          Confirmar Transferencia
+        </button>
+      </div>
+    }
+
+    <!-- Contenedor de MercadoPago siempre presente pero oculto/mostrado según necesidad -->
+    <div [style.display]="selectedMethod === 'card' ? 'block' : 'none'" #cardPaymentContainer>
+      <div id="cardPaymentBrick_container" class="mt-4"></div>
+    </div>
+
+    @if (showConfirmation) {
+      <div class="mt-4 bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-2">
+        <i class="fas fa-check text-green-600"></i>
+        <p class="text-green-600">¡Pago procesado exitosamente!</p>
+      </div>
+    }
+  </div>
+</div>
