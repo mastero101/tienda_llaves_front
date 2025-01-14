@@ -1,7 +1,7 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { environment } from '../../environments/environment';
-import { delay } from 'rxjs';
+import axios from 'axios';
 
 declare var MercadoPago: any;
 
@@ -9,7 +9,7 @@ declare var MercadoPago: any;
   providedIn: 'root'
 })
 export class MercadoPagoService {
-  private mp: any;
+  public mp: any;
   private isSDKLoaded: boolean = false;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
@@ -36,14 +36,10 @@ export class MercadoPagoService {
               try {
                 console.log('Datos del formulario:', cardFormData);
         
+                // Esperar 5 segundos antes de mostrar el alert
                 setTimeout(() => {
-                  alert(`Pago Exitoso
-                          \nToken: ${cardFormData.token}
-                          \nCliente: ${cardFormData.payer.email}
-                          \nMetodo Pago: ${cardFormData.payment_method_id}
-                          \nCantidad: ${cardFormData.transaction_amount}
-                        `);
-                }, 3000);
+                  alert("Pago Exitoso");
+                }, 5000); // 5000 milisegundos = 5 segundos
 
               } catch (error) {
                 console.error('Error en el pago:', error);
@@ -97,5 +93,22 @@ export class MercadoPagoService {
         reject('No estamos en un navegador');
       }
     });
+  }
+
+  async processPayment(paymentData: any) {
+    try {
+      // Asegurarse de que transaction_amount sea un número
+      const formattedPaymentData = {
+        ...paymentData,
+        transaction_amount: Number(paymentData.transaction_amount),
+        installments: Number(paymentData.installments)
+      };
+
+      const response = await axios.post(`${environment.apiUrl}/process-payment`, formattedPaymentData);
+      return response.data;
+    } catch (error) {
+      console.error('Error al procesar el pago:', error);
+      throw error;
+    }
   }
 }

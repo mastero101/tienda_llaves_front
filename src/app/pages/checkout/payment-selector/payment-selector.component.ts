@@ -53,7 +53,57 @@ export class PaymentSelectorComponent implements AfterViewInit {
   private async initializeMercadoPago() {
     try {
       console.log('Inicializando MercadoPago...');
-      await this.mercadoPagoService.initCardPayment(this.amount);
+      const bricksBuilder = this.mercadoPagoService.mp.bricks();
+      
+      await bricksBuilder.create("cardPayment", "cardPaymentBrick_container", {
+        initialization: {
+          amount: this.amount
+        },
+        callbacks: {
+          onReady: () => {
+            console.log('Brick listo');
+          },
+          onSubmit: async (cardFormData: any) => {
+            try {
+              const paymentData = {
+                token: cardFormData.token,
+                issuer_id: cardFormData.issuer_id,
+                payment_method_id: cardFormData.payment_method_id,
+                transaction_amount: Number(this.amount),
+                installments: cardFormData.installments || 1,
+                payer: {
+                  email: cardFormData.payer.email,
+                  identification: {
+                    type: "DNI",
+                    number: "12345678"
+                  }
+                }
+              };
+
+              const response = await this.mercadoPagoService.processPayment(paymentData);
+              console.log('Respuesta del pago:', response);
+              
+              if (response.status === 'approved') {
+                alert(`Pago Exitoso
+                  \nID: ${response.id}
+                  \nEstatus: ${response.status}
+                  \nMonto: ${response.transaction_amount}`);
+              } else {
+                alert(`Pago Rechazado
+                  \nMotivo: ${response.status_detail}
+                  \nPor favor, intente con otra tarjeta`);
+              }
+
+            } catch (error) {
+              console.error('Error en el pago:', error);
+              alert('Error al procesar el pago');
+            }
+          },
+          onError: (error: any) => {
+            console.error('Error en brick:', error);
+          }
+        }
+      });
     } catch (error) {
       console.error('Error al inicializar MercadoPago:', error);
     }
