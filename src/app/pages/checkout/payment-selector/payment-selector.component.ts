@@ -1,14 +1,7 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MercadoPagoService } from '../../../services/mercado-pago.service';
-
-interface CardData {
-  number: string;
-  name: string;
-  expiry: string;
-  cvv: string;
-}
 
 @Component({
   selector: 'app-payment-selector',
@@ -17,7 +10,6 @@ interface CardData {
   templateUrl: './payment-selector.component.html',
   styleUrl: './payment-selector.component.scss'
 })
-
 export class PaymentSelectorComponent implements AfterViewInit {
   @Input() amount: number = 0;
   @Output() paymentSubmit = new EventEmitter<{ method: string, data: any }>();
@@ -26,7 +18,7 @@ export class PaymentSelectorComponent implements AfterViewInit {
   selectedMethod: string = '';
   showConfirmation: boolean = false;
   showCopied: boolean = false;
-  showPaymentConfirmation: boolean = false;
+  showPaymentModal: boolean = false;
   paymentResponse: any = null;
 
   bankInfo = {
@@ -35,10 +27,32 @@ export class PaymentSelectorComponent implements AfterViewInit {
     clabe: '638180000129689296'
   };
 
-  constructor(private mercadoPagoService: MercadoPagoService) { }
+  constructor(
+    private mercadoPagoService: MercadoPagoService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngAfterViewInit() {
     console.log('Vista inicializada');
+  }
+
+  closePaymentModal() {
+    this.showPaymentModal = false;
+    this.paymentResponse = null;
+  }
+
+  getErrorMessage(statusDetail: string): string {
+    const errorMessages: { [key: string]: string } = {
+      'cc_rejected_bad_filled_date': 'Fecha de vencimiento incorrecta',
+      'cc_rejected_bad_filled_security_code': 'Código de seguridad incorrecto',
+      'cc_rejected_card_disabled': 'Tarjeta deshabilitada',
+      'cc_rejected_call_for_authorize': 'Necesita autorización',
+      'cc_rejected_insufficient_amount': 'Fondos insuficientes',
+      'cc_rejected_other_reason': 'Tarjeta rechazada por otra razón',
+      'default': 'Error al procesar el pago'
+    };
+
+    return errorMessages[statusDetail] || errorMessages['default'];
   }
 
   onMethodChange(method: string) {
@@ -65,6 +79,8 @@ export class PaymentSelectorComponent implements AfterViewInit {
           },
           onSubmit: async (cardFormData: any) => {
             try {
+              console.log('Procesando pago...', cardFormData);
+              
               const paymentData = {
                 token: cardFormData.token,
                 issuer_id: cardFormData.issuer_id,
@@ -72,31 +88,25 @@ export class PaymentSelectorComponent implements AfterViewInit {
                 transaction_amount: Number(this.amount),
                 installments: cardFormData.installments || 1,
                 payer: {
-                  email: cardFormData.payer.email,
-                  identification: {
-                    type: "DNI",
-                    number: "12345678"
-                  }
+                  email: cardFormData.payer.email
                 }
               };
 
               const response = await this.mercadoPagoService.processPayment(paymentData);
               console.log('Respuesta del pago:', response);
               
-              if (response.status === 'approved') {
-                alert(`Pago Exitoso
-                  \nID: ${response.id}
-                  \nEstatus: ${response.status}
-                  \nMonto: ${response.transaction_amount}`);
-              } else {
-                alert(`Pago Rechazado
-                  \nMotivo: ${response.status_detail}
-                  \nPor favor, intente con otra tarjeta`);
-              }
+              this.paymentResponse = response;
+              this.showPaymentModal = true;
+              this.cdr.detectChanges();
 
             } catch (error) {
               console.error('Error en el pago:', error);
-              alert('Error al procesar el pago');
+              this.paymentResponse = {
+                status: 'error',
+                status_detail: 'Error al procesar el pago'
+              };
+              this.showPaymentModal = true;
+              this.cdr.detectChanges();
             }
           },
           onError: (error: any) => {
