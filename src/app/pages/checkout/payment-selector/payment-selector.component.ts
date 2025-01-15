@@ -1,7 +1,9 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MercadoPagoService } from '../../../services/mercado-pago.service';
+import { NotificationService } from '../../../services/notification.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-payment-selector',
@@ -29,11 +31,15 @@ export class PaymentSelectorComponent implements AfterViewInit {
 
   constructor(
     private mercadoPagoService: MercadoPagoService,
-    private cdr: ChangeDetectorRef
+    private notificationService: NotificationService,
+    private cdr: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) { }
 
   ngAfterViewInit() {
-    console.log('Vista inicializada');
+    if (isPlatformBrowser(this.platformId)) {
+      console.log('Vista inicializada en el navegador');
+    }
   }
 
   closePaymentModal() {
@@ -56,6 +62,8 @@ export class PaymentSelectorComponent implements AfterViewInit {
   }
 
   onMethodChange(method: string) {
+    if (!isPlatformBrowser(this.platformId)) return;
+    
     this.selectedMethod = method;
     if (method === 'card') {
       setTimeout(() => {
@@ -65,6 +73,8 @@ export class PaymentSelectorComponent implements AfterViewInit {
   }
 
   private async initializeMercadoPago() {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     try {
       console.log('Inicializando MercadoPago...');
       const bricksBuilder = this.mercadoPagoService.mp.bricks();
@@ -95,6 +105,10 @@ export class PaymentSelectorComponent implements AfterViewInit {
               const response = await this.mercadoPagoService.processPayment(paymentData);
               console.log('Respuesta del pago:', response);
               
+              if (response.status === 'approved') {
+                await this.sendPaymentNotification(response);
+              }
+
               this.paymentResponse = response;
               this.showPaymentModal = true;
               this.cdr.detectChanges();
@@ -143,6 +157,24 @@ export class PaymentSelectorComponent implements AfterViewInit {
       }
     } catch (error) {
       console.error('Error al procesar el pago:', error);
+    }
+  }
+
+  private async sendPaymentNotification(paymentData: any) {
+    try {
+      const notificationData = {
+        paymentId: paymentData.id,
+        amount: paymentData.transaction_amount,
+        date: new Date().toISOString(),
+        customerEmail: paymentData.payer.email,
+        status: paymentData.status,
+        paymentMethod: paymentData.payment_method_id
+      };
+
+      await this.notificationService.sendNotification(notificationData);
+      console.log('Notificación enviada exitosamente');
+    } catch (error) {
+      console.error('Error al enviar notificación:', error);
     }
   }
 }
