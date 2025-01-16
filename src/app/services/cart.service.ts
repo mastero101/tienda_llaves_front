@@ -8,7 +8,7 @@ import { Product } from '../interfaces/product.interface';
   providedIn: 'root'
 })
 export class CartService {
-  private cartItems = new BehaviorSubject<CartItem[]>([]);
+  public cartItems = new BehaviorSubject<CartItem[]>([]);
   cartItems$ = this.cartItems.asObservable();
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {

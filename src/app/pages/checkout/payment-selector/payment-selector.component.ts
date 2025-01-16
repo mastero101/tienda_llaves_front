@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MercadoPagoService } from '../../../services/mercado-pago.service';
 import { isPlatformBrowser } from '@angular/common';
+import { CartService } from '../../../services/cart.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-payment-selector',
@@ -31,7 +33,8 @@ export class PaymentSelectorComponent implements AfterViewInit {
   constructor(
     private mercadoPagoService: MercadoPagoService,
     private cdr: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private cartService: CartService
   ) { }
 
   ngAfterViewInit() {
@@ -70,6 +73,13 @@ export class PaymentSelectorComponent implements AfterViewInit {
     }
   }
 
+  private async formatCartItemsDescription(): Promise<string> {
+    const items = await firstValueFrom(this.cartService.cartItems$);
+    return items.map(item => 
+      `${item.quantity}x ${item.product.name} ($${item.product.price} MXN)`
+    ).join(', ');
+  }
+
   private async initializeMercadoPago() {
     try {
       console.log('Inicializando MercadoPago...');
@@ -85,7 +95,7 @@ export class PaymentSelectorComponent implements AfterViewInit {
           },
           onSubmit: async (cardFormData: any) => {
             try {
-              console.log('Datos del formulario:', cardFormData);
+              const itemsDescription = await this.formatCartItemsDescription();
               
               const paymentData = {
                 token: cardFormData.token,
@@ -93,6 +103,7 @@ export class PaymentSelectorComponent implements AfterViewInit {
                 payment_method_id: cardFormData.payment_method_id,
                 transaction_amount: Number(this.amount),
                 installments: cardFormData.installments || 1,
+                description: itemsDescription,
                 payer: {
                   email: cardFormData.payer?.email || 'no-email@example.com'
                 }
@@ -100,18 +111,15 @@ export class PaymentSelectorComponent implements AfterViewInit {
 
               console.log('Enviando datos de pago:', paymentData);
               const response = await this.mercadoPagoService.processPayment(paymentData);
-              console.log('Respuesta del pago:', response);
               
               if (response.status === 'approved') {
                 const notificationData = {
                   ...response,
+                  items: this.cartService.cartItems.value,
+                  itemsDescription: itemsDescription,
                   payer: {
                     ...response.payer,
                     email: cardFormData.payer?.email || response.payer?.email || 'no-email@example.com'
-                  },
-                  card: {
-                    ...response.card,
-                    last_four_digits: response.card?.last_four_digits || 'N/A'
                   }
                 };
                 
