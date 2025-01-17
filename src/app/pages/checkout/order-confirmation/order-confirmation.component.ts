@@ -40,7 +40,7 @@ export class OrderConfirmationComponent implements OnInit {
       this.total = this.cartService.getTotal();
     });
     // Enviar correo de confirmación
-    this.sendConfirmationEmail();
+    //this.sendConfirmationEmail();
   }
   
   sendConfirmationEmail() {

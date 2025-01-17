@@ -179,7 +179,7 @@ export class PaymentSelectorComponent implements AfterViewInit {
           data: null
         });
         this.showConfirmation = true;
-        setTimeout(() => this.showConfirmation = false, 3000);
+        setTimeout(() => this.showConfirmation = false, 60000);
       }
     } catch (error) {
       console.error('Error al procesar el pago:', error);
