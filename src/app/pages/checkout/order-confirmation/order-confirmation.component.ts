@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CartService } from '../../../services/cart.service';
 import { CartItem } from '../../../interfaces/cart-item.interface';
+import axios from 'axios';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-order-confirmation',
@@ -16,6 +18,9 @@ export class OrderConfirmationComponent implements OnInit {
   paymentStatus: string = '';
   cartItems: CartItem[] = [];
   total: number = 0;
+  customerInfo = {
+    email: '' // Asegúrate de tener esta información disponible
+  };
 
   constructor(
     private router: Router,
@@ -34,7 +39,28 @@ export class OrderConfirmationComponent implements OnInit {
       this.cartItems = items;
       this.total = this.cartService.getTotal();
     });
+    // Enviar correo de confirmación
+    this.sendConfirmationEmail();
   }
+  
+  sendConfirmationEmail() {
+    const emailData = {
+      email: this.customerInfo.email,
+      orderId: this.orderId,
+      items: this.cartItems.map(item => `${item.quantity}x ${item.product.name}`).join(', '),
+      total: this.total
+    };
+
+    axios.post(`${environment.apiUrl}/process-payment`, emailData)
+      .then((response: { data: any; }) => {
+        console.log('Correo de confirmación enviado:', response.data);
+      })
+      .catch((error: any) => {
+        console.error('Error al enviar el correo de confirmación:', error);
+        console.log(emailData)
+      });
+  }
+
 
   goToHome() {
     this.router.navigate(['/']);
