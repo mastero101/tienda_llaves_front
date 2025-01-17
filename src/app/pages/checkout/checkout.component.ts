@@ -14,7 +14,7 @@ import { PaymentSelectorComponent } from './payment-selector/payment-selector.co
   imports: [CommonModule, FormsModule, PaymentSelectorComponent], // Agregar a imports
   templateUrl: './checkout.component.html'
 })
-export class CheckoutComponent implements OnInit, OnDestroy {
+export class CheckoutComponent implements OnInit {
   cartItems: CartItem[] = [];
   total: number = 0;
   private cartSubscription?: Subscription;
@@ -41,18 +41,9 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     this.cartSubscription = this.cartService.cartItems$.subscribe(items => {
       this.cartItems = items;
       this.total = this.cartService.getTotal();
-
-      if (this.cartItems.length === 0) {
-        this.router.navigate(['/productos']);
-      }
     });
   }
 
-  ngOnDestroy() {
-    if (this.cartSubscription) {
-      this.cartSubscription.unsubscribe();
-    }
-  }
 
   // Nuevo método para manejar el evento del selector de pagos
   handlePaymentSubmit(event: {method: string, data: any}) {

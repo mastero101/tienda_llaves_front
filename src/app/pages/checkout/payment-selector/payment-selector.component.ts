@@ -5,6 +5,7 @@ import { MercadoPagoService } from '../../../services/mercado-pago.service';
 import { isPlatformBrowser } from '@angular/common';
 import { CartService } from '../../../services/cart.service';
 import { firstValueFrom } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-payment-selector',
@@ -34,7 +35,8 @@ export class PaymentSelectorComponent implements AfterViewInit {
     private mercadoPagoService: MercadoPagoService,
     private cdr: ChangeDetectorRef,
     @Inject(PLATFORM_ID) private platformId: Object,
-    private cartService: CartService
+    private cartService: CartService,
+    private router: Router
   ) { }
 
   ngAfterViewInit() {
@@ -123,11 +125,19 @@ export class PaymentSelectorComponent implements AfterViewInit {
                   }
                 };
                 
-              }
+                this.showPaymentModal = true;
+                this.paymentResponse = response;
+                this.cdr.detectChanges();
 
-              this.paymentResponse = response;
-              this.showPaymentModal = true;
-              this.cdr.detectChanges();
+                setTimeout(() => {
+                  this.router.navigate(['/checkout/confirmation'], {
+                    queryParams: {
+                      orderId: response.id,
+                      status: response.status
+                    }
+                  });
+                }, 3000);
+              }
 
             } catch (error) {
               console.error('Error en el pago:', error);
