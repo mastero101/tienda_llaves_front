@@ -15,6 +15,7 @@ export class HeaderComponent implements OnInit {
   cartItemCount = 0;
   cartItems: CartItem[] = [];
   isCartOpen = false;
+  isMobileMenuOpen = false;
   total = 0;
 
   constructor(private cartService: CartService) {}
@@ -26,9 +27,19 @@ export class HeaderComponent implements OnInit {
       this.total = this.cartService.getTotal();
     });
   }
-
+  
   toggleCart() {
     this.isCartOpen = !this.isCartOpen;
+    if (this.isCartOpen) {
+      this.isMobileMenuOpen = false; // Cerrar menú móvil si está abierto
+    }
+  }
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+    if (this.isMobileMenuOpen) {
+      this.isCartOpen = false; // Cerrar carrito si está abierto
+    }
   }
 
   removeItem(productId: number) {

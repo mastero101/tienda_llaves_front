@@ -49,7 +49,7 @@ export class ProductService {
     {
       id: 6,
       name: 'Office 21 Pro Plus Telefonica',
-      description: 'Licencia digital para Office 21 Pro Plus Telefonica',
+      description: 'Licencia digital para Office 21 Pro Plus',
       price: 80.99,
       type: 'proplus',
       imageUrl: 'https://dharmacorpstore.com/wp-content/uploads/2023/03/office_2021_professional_plus_800x.jpg',

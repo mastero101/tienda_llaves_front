@@ -98,12 +98,12 @@
       <swiper-slide *ngFor="let product of products" 
                     class="max-w-sm">
         <div class="bg-white rounded-lg shadow-lg overflow-hidden h-full">
-          <div class="relative aspect-[4/3] w-full overflow-hidden bg-white">
+          <div class="relative w-full h-64 overflow-hidden bg-white">
             <img [src]="product.imageUrl" 
                  [alt]="product.name"
                  (error)="handleImageError($event)"
                  (click)="goToProduct(product.id)"
-                 class="w-full h-full object-contain p-6 hover:scale-105 transition-transform duration-300 cursor-pointer"
+                 class="w-full h-full object-cover transition-transform duration-300 cursor-pointer"
                  loading="lazy">
           </div>
           <div class="p-4 h-[180px] flex flex-col justify-between">

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { ProductService } from '../../services/product.service';
@@ -6,6 +6,7 @@ import { CartService } from '../../services/cart.service';
 import { Product } from '../../interfaces/product.interface';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-productdetail',
@@ -24,7 +25,8 @@ export class ProductdetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private productService: ProductService,
-    private cartService: CartService
+    private cartService: CartService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit() {
@@ -40,8 +42,10 @@ export class ProductdetailComponent implements OnInit, OnDestroy {
       // Resetear la cantidad cuando cambia el producto
       this.quantity = 1;
       
-      // Opcional: Hacer scroll al inicio de la página
-      window.scrollTo(0, 0);
+      // Hacer scroll al inicio de la página solo si estamos en el navegador
+      if (isPlatformBrowser(this.platformId)) {
+        window.scrollTo(0, 0);
+      }
     });
   }
 
