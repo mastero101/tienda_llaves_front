@@ -10,6 +10,7 @@ import { Product } from '../interfaces/product.interface';
 export class CartService {
   public cartItems = new BehaviorSubject<CartItem[]>([]);
   cartItems$ = this.cartItems.asObservable();
+  private customerEmail: string = '';
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     if (isPlatformBrowser(this.platformId)) {
@@ -67,5 +68,13 @@ export class CartService {
   getTotal(): number {
     return this.cartItems.value.reduce((total, item) => 
       total + (item.product.price * item.quantity), 0);
+  }
+
+  setCustomerEmail(email: string) {
+    this.customerEmail = email;
+  }
+
+  getCustomerEmail(): string {
+    return this.customerEmail;
   }
 } 

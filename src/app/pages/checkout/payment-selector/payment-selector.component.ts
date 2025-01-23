@@ -174,17 +174,48 @@ export class PaymentSelectorComponent implements AfterViewInit {
   async onSubmit() {
     try {
       if (this.selectedMethod === 'transfer') {
+        // Obtener los artículos del carrito
+        const cartItems = await firstValueFrom(this.cartService.cartItems$);
+        console.log('Artículos del carrito:', cartItems); // Agregar log para depuración
+  
+        // Obtener el correo del cliente
+        const customerEmail = this.cartService.getCustomerEmail();
+        console.log('Correo del cliente:', customerEmail); // Agregar log para depuración
+  
+        // Emitir el evento con los datos de la transferencia, los artículos y el correo
         this.paymentSubmit.emit({
           method: 'transfer',
-          data: null
+          data: {
+            bankInfo: this.bankInfo,
+            amount: this.amount,
+            items: cartItems, // Incluir los artículos del carrito
+            customerEmail: customerEmail // Incluir el correo del cliente
+          }
         });
-        this.showConfirmation = true;
-        setTimeout(() => this.showConfirmation = false, 60000);
+  
+        // Simular la confirmación de la transferencia
+        const response = {
+          status: 'approved',
+          id: `TRANSFER-${Date.now()}`, // ID de transferencia
+          transaction_amount: this.amount
+        };
+  
+        this.paymentResponse = response;
+        this.showPaymentModal = true;
+  
+        // Navegar a la página de confirmación después de un retraso
+        setTimeout(() => {
+          this.router.navigate(['/checkout/confirmation'], {
+            queryParams: {
+              orderId: response.id, // Usar el ID de transferencia
+              status: 'Waiting',
+              method: 'transfer'
+            }
+          });
+        }, 3000);
       }
     } catch (error) {
       console.error('Error al procesar el pago:', error);
     }
   }
-
-  
 }

@@ -46,17 +46,46 @@ export class CheckoutComponent implements OnInit {
 
 
   // Nuevo método para manejar el evento del selector de pagos
-  handlePaymentSubmit(event: {method: string, data: any}) {
+  handlePaymentSubmit(event: { method: string, data: any }) {
     this.customerInfo.paymentMethod = event.method;
-    
+
+    console.log('Validando formulario...', this.validateForm()); // Agregar log para depuración
+    if (this.validateForm()) {
+      // Continuar con el proceso
+    } else {
+      console.log('Formulario no válido'); // Agregar log para depuración
+      alert('Por favor, complete todos los campos requeridos.');
+    }
+  
+    // Validar el formulario antes de continuar
     if (this.validateForm()) {
       try {
+        // Almacenar el correo del usuario en el servicio CartService
+        this.cartService.setCustomerEmail(this.customerInfo.email);
+  
         if (event.method === 'transfer') {
-          // Procesar la transferencia
-          console.log('Procesando transferencia bancaria');
+          // Enviar la confirmación de transferencia al backend
+          this.mercadoPagoService.sendBankTransferConfirmation({
+            customerEmail: this.customerInfo.email, // Correo del usuario
+            transferDetails: {
+              ...event.data,
+              amount: this.total
+            }
+          })
+          .then((response) => {
+            console.log('Respuesta del backend:', response); // Agregar log para depuración
+            this.router.navigate(['/checkout/confirmation'], {
+              queryParams: {
+                method: 'transfer',
+                amount: this.total
+              }
+            });
+          })
+          .catch((error) => {
+            console.error('Error al enviar confirmación:', error);
+            alert('No se pudo enviar el correo de confirmación. Por favor, inténtelo de nuevo.');
+          });
         }
-        // No necesitamos manejar el caso de 'card' aquí porque
-        // MercadoPago se encarga de eso en su propio formulario
       } catch (error) {
         console.error('Error al procesar el pago:', error);
       }
@@ -77,11 +106,7 @@ export class CheckoutComponent implements OnInit {
     return !!(
       this.customerInfo.email &&
       this.customerInfo.firstName &&
-      this.customerInfo.lastName &&
-      this.customerInfo.phone &&
-      this.customerInfo.address &&
-      this.customerInfo.city &&
-      this.customerInfo.zipCode
+      this.customerInfo.lastName
     );
   }
 }

@@ -111,4 +111,13 @@ export class MercadoPagoService {
       throw error;
     }
   }
+  
+  sendBankTransferConfirmation(data: any): Promise<any> {
+    return axios.post(`${environment.apiUrl}/bank-transfer-confirmation`, data)
+      .then(response => response.data)
+      .catch(error => {
+        console.error('Error al enviar confirmación de transferencia:', error);
+        throw error;
+      });
+  }
 }
