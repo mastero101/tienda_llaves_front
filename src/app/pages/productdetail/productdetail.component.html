@@ -10,51 +10,63 @@
     <!-- Detalles del producto -->
     <div class="space-y-6">
       <h1 class="text-3xl font-bold text-gray-900">{{ product.name }}</h1>
-      <p class="text-gray-600">{{ product.description }}</p>
       
       <!-- Precio -->
       <div class="text-4xl font-bold text-blue-600">
         {{ product.price | currency }}
       </div>
 
+      
       <!-- Selector de cantidad -->
       <div class="flex items-center gap-4">
         <span class="text-gray-700">Cantidad:</span>
         <div class="flex items-center border rounded-lg">
           <button (click)="updateQuantity(-1)"
-                  class="px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors">
-            <i class="fa-solid fa-minus"></i>
-          </button>
-          <input type="number" 
-                 [(ngModel)]="quantity"
-                 min="1"
-                 class="w-16 text-center border-x py-2"
-                 (change)="quantity = quantity < 1 ? 1 : quantity">
-          <button (click)="updateQuantity(1)"
-                  class="px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors">
-            <i class="fa-solid fa-plus"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Botón agregar al carrito -->
-      <button (click)="addToCart()"
-              class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg
-                     hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
-        <i class="fa-solid fa-cart-plus"></i>
-        Agregar al Carrito
+          class="px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors">
+          <i class="fa-solid fa-minus"></i>
+        </button>
+        <input type="number" 
+        [(ngModel)]="quantity"
+        min="1"
+        class="w-16 text-center border-x py-2"
+        (change)="quantity = quantity < 1 ? 1 : quantity">
+        <button (click)="updateQuantity(1)"
+        class="px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors">
+        <i class="fa-solid fa-plus"></i>
       </button>
-
-      <!-- Características del producto -->
-      <div class="border-t pt-6 mt-6">
-        <h2 class="text-xl font-semibold mb-4">Características</h2>
-        <ul class="space-y-2">
-          <li class="flex items-center gap-2">
-            <i class="fa-solid fa-check text-green-500"></i>
-            <span>{{ product.description }}</span>
-          </li>
-        </ul>
-      </div>
     </div>
   </div>
+  
+  <!-- Botón agregar al carrito -->
+  <button (click)="addToCart()"
+  class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg
+  hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+  <i class="fa-solid fa-cart-plus"></i>
+  Agregar al Carrito
+  </button>
+
+  <!-- Características del producto -->
+  <div class="border-t pt-6 mt-6">
+    <h2 class="text-xl font-semibold mb-4">Características</h2>
+    <ul class="space-y-2">
+      <li class="flex items-center gap-2">
+        <span>{{ product.description }}</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Instrucciones de instalación -->
+  <div class="border-t pt-6 mt-6">
+    <h2 class="text-xl font-semibold mb-4">Instrucciones de Instalación</h2>
+    <ul class="space-y-2">
+      <li *ngFor="let instruction of product.installationInstructions" 
+          class="flex items-center gap-2">
+        <i class="fa-solid fa-check text-green-500"></i>
+        <span [innerHTML]="getSafeInstruction(instruction)"></span>
+      </li>
+    </ul>
+  </div>
+
+</div>
+</div>
 </div>

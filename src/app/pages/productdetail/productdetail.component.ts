@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
@@ -26,6 +27,7 @@ export class ProductdetailComponent implements OnInit, OnDestroy {
     private router: Router,
     private productService: ProductService,
     private cartService: CartService,
+    private sanitizer: DomSanitizer,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -54,6 +56,31 @@ export class ProductdetailComponent implements OnInit, OnDestroy {
     if (this.routeSub) {
       this.routeSub.unsubscribe();
     }
+  }
+
+  // Método para transformar las instrucciones en SafeHtml
+  getSafeInstruction(instruction: string): SafeHtml {
+    // Lista de URLs conocidas para convertir en enlaces
+    const urlMappings = {
+      'office.com/setup': 'https://office.com/setup',
+      'settings.windows.com/activation': 'https://settings.windows.com/activation',
+      'account.autodesk.com': 'https://account.autodesk.com',
+      'office.com': 'https://office.com'
+    };
+  
+    let htmlString = instruction;
+    
+    // Revisar cada URL conocida y convertirla en enlace si está presente
+    Object.entries(urlMappings).forEach(([textUrl, fullUrl]) => {
+      if (instruction.includes(textUrl)) {
+        htmlString = instruction.replace(
+          textUrl,
+          `<a href="${fullUrl}" target="_blank" class="text-blue-600 hover:underline">${textUrl}</a>`
+        );
+      }
+    });
+  
+    return this.sanitizer.bypassSecurityTrustHtml(htmlString);
   }
 
   addToCart() {
