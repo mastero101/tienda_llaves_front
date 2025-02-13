@@ -5,6 +5,7 @@ import { CartComponent } from './pages/cart/cart.component';
 import { ProductdetailComponent } from './pages/productdetail/productdetail.component';
 import { CheckoutComponent } from './pages/checkout/checkout.component';
 import { OrderConfirmationComponent } from './pages/checkout/order-confirmation/order-confirmation.component';
+import { SalesComponent } from './sales/sales/sales.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -12,6 +13,7 @@ export const routes: Routes = [
   { path: 'carrito', component: CartComponent },
   { path: 'productos/:id', component: ProductdetailComponent },
   { path: 'checkout', component: CheckoutComponent },
+  { path: 'sales', component: SalesComponent },
   {
     path: 'checkout/confirmation',
     component: OrderConfirmationComponent
