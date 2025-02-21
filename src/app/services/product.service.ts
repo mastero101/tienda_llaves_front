@@ -75,7 +75,7 @@ export class ProductService {
         id: 5,
         name: 'Office Pro Plus 19 Telefonica',
         description: 'Suite completa de productividad Microsoft Office 2019 que incluye versiones completas de Word, Excel, PowerPoint, Outlook, Publisher y Access.',
-        price: 80.99,
+        price: 99.99,
         type: 'proplus',
         imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOOejoH0zG10Iu-FnQXaakbYv5oMM-iq0mmQ&s',
         installationInstructions: [
@@ -92,7 +92,7 @@ export class ProductService {
         id: 6,
         name: 'Office 21 Pro Plus Telefonica',
         description: 'La última versión de Microsoft Office con características mejoradas de IA y colaboración en la nube. Incluye Word, Excel, PowerPoint, Outlook, Publisher y Access.',
-        price: 80.99,
+        price: 99.99,
         type: 'proplus',
         imageUrl: 'https://dharmacorpstore.com/wp-content/uploads/2023/03/office_2021_professional_plus_800x.jpg',
         installationInstructions: [
