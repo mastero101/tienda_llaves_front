@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { register } from 'swiper/element/bundle';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../interfaces/product.interface';
+import { ChatBubbleComponent } from '../chat-bubble/chat-bubble.component';
 
 // Registrar Swiper
 register();
@@ -12,7 +13,7 @@ register();
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ChatBubbleComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
